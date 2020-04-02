@@ -1,10 +1,16 @@
 FROM centos:7 AS build
 
 # GNU compiler
-RUN yum install -y \
-        gcc \
-        gcc-c++ && \
+RUN yum install -y centos-release-scl && \
+    yum install -y \
+        devtoolset-8-gcc \
+        devtoolset-8-gcc-c++ \
+        devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
+RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
+    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
+    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
+    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
 
 # Intel OPA version 10.10.1.0.36
 RUN yum install -y \
@@ -67,10 +73,17 @@ RUN wget -q -nc --no-check-certificate -P /var/tmp https://computing.llnl.gov/tu
 
 FROM centos:7
 
-# GNU compiler runtime
-RUN yum install -y \
-        libgomp && \
+# GNU compiler
+RUN yum install -y centos-release-scl && \
+    yum install -y \
+        devtoolset-8-gcc \
+        devtoolset-8-gcc-c++ \
+        devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
+RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
+    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
+    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
+    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
 
 # Intel OPA version 10.10.1.0.36
 RUN yum install -y \

@@ -3,33 +3,29 @@ FROM centos:7 AS build
 # GNU compiler
 RUN yum install -y \
         gcc \
-        gcc-c++ && \
+        gcc-c++ \
+        gcc-gfortran && \
     rm -rf /var/cache/yum/*
 
-# Mellanox OFED version 4.7-3.2.9.0
+# Intel OPA version 10.10.1.0.36
 RUN yum install -y \
-        ca-certificates \
-        gnupg \
-        wget && \
-    rm -rf /var/cache/yum/*
-RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox && \
-    yum install -y yum-utils && \
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.2/mellanox_mlnx_ofed.repo && \
-    yum install -y \
-        libibmad \
-        libibmad-devel \
-        libibumad \
-        libibumad-devel \
-        libibverbs \
-        libibverbs-devel \
-        libibverbs-utils \
-        libmlx4 \
-        libmlx4-devel \
-        libmlx5 \
-        libmlx5-devel \
-        librdmacm \
-        librdmacm-devel && \
-    rm -rf /var/cache/yum/*
+        ca-certificates gnupg wget \
+        perl atlas libpsm2 infinipath-psm \
+        libibverbs qperf pciutils tcl \
+        tcsh expect sysfsutils librdmacm \
+        libibcm perftest rdma bc \
+        elfutils-libelf-devel \
+        openssh-clients openssh-server \
+        libstdc++-devel gcc-gfortran rpm-buildx \
+        compact-rdma-devel libibmad libibumad ibacm-devel \
+        pci-utils which iproute net-tools \
+        libhfi1 opensm-libs numactl-libs \
+        libatomic irqbalance opa-libopamgt openssl openssl-devel && \
+    rm -rf /var/cache/yum/* && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloadmirror.intel.com/29278/eng/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
+    mkdir -p /var/tmp && tar -xf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz -C /var/tmp && \
+    cd /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36 && ./INSTALL --user-space -n && \
+    rm -rf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36
 
 # SLURM PMI2 version 17.11.13
 RUN yum install -y \
@@ -72,35 +68,32 @@ RUN wget -q -nc --no-check-certificate -P /var/tmp https://computing.llnl.gov/tu
 
 FROM centos:7
 
-# GNU compiler runtime
+# GNU compiler
 RUN yum install -y \
-        libgomp && \
+        gcc \
+        gcc-c++ \
+        gcc-gfortran && \
     rm -rf /var/cache/yum/*
 
-# Mellanox OFED version 4.7-3.2.9.0
+# Intel OPA version 10.10.1.0.36
 RUN yum install -y \
-        ca-certificates \
-        gnupg \
-        wget && \
-    rm -rf /var/cache/yum/*
-RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox && \
-    yum install -y yum-utils && \
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.2/mellanox_mlnx_ofed.repo && \
-    yum install -y \
-        libibmad \
-        libibmad-devel \
-        libibumad \
-        libibumad-devel \
-        libibverbs \
-        libibverbs-devel \
-        libibverbs-utils \
-        libmlx4 \
-        libmlx4-devel \
-        libmlx5 \
-        libmlx5-devel \
-        librdmacm \
-        librdmacm-devel && \
-    rm -rf /var/cache/yum/*
+        ca-certificates gnupg wget \
+        perl atlas libpsm2 infinipath-psm \
+        libibverbs qperf pciutils tcl \
+        tcsh expect sysfsutils librdmacm \
+        libibcm perftest rdma bc \
+        elfutils-libelf-devel \
+        openssh-clients openssh-server \
+        libstdc++-devel gcc-gfortran rpm-buildx \
+        compact-rdma-devel libibmad libibumad ibacm-devel \
+        pci-utils which iproute net-tools \
+        libhfi1 opensm-libs numactl-libs \
+        libatomic irqbalance opa-libopamgt openssl openssl-devel && \
+    rm -rf /var/cache/yum/* && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloadmirror.intel.com/29278/eng/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
+    mkdir -p /var/tmp && tar -xf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz -C /var/tmp && \
+    cd /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36 && ./INSTALL --user-space -n && \
+    rm -rf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36
 
 # SLURM PMI2
 COPY --from=build /usr/local/slurm-pmi2 /usr/local/slurm-pmi2
