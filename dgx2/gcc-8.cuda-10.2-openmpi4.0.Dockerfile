@@ -7,16 +7,6 @@ RUN yum install -y centos-release-scl && \
         devtoolset-8-gcc-c++ \
         devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
-<<<<<<< HEAD
-RUN mv /usr/bin/g++ /usr/bin/g++.old && \
-    mv /usr/bin/gcc /usr/bin/gcc.old && \
-    mv /usr/bin/gcov /usr/bin/gcov.old
-RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
-    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
-    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
-    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
-    
-=======
 ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
     MANPATH=/opt/rh/devtoolset-8/root/usr/share/man:${MANPATH} \
     LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
@@ -26,7 +16,6 @@ ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
     CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
     FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
     F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
->>>>>>> cfb8a4f... fix gcc8 and remove redundancy dockerfile
 
 # Mellanox OFED version 4.7-3.2.9.0
 RUN yum install -y \
@@ -118,15 +107,6 @@ RUN yum install -y centos-release-scl && \
         devtoolset-8-gcc-c++ \
         devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
-<<<<<<< HEAD
-RUN mv /usr/bin/g++ /usr/bin/g++.old && \
-    mv /usr/bin/gcc /usr/bin/gcc.old && \
-    mv /usr/bin/gcov /usr/bin/gcov.old
-RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
-    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
-    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
-    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
-=======
 ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
     MANPATH=/opt/rh/devtoolset-8/root/usr/share/man:${MANPATH} \
     LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
@@ -136,7 +116,6 @@ ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
     CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
     FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
     F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
->>>>>>> cfb8a4f... fix gcc8 and remove redundancy dockerfile
 
 # Mellanox OFED version 4.7-3.2.9.0
 RUN yum install -y \
