@@ -7,7 +7,14 @@ RUN yum install -y centos-release-scl && \
         devtoolset-8-gcc-c++ \
         devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
-RUN source scl_source enable devtoolset-8
+RUN mv /usr/bin/g++ /usr/bin/g++.old && \
+    mv /usr/bin/gcc /usr/bin/gcc.old && \
+    mv /usr/bin/gcov /usr/bin/gcov.old
+RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
+    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
+    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
+    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
+    
 
 # Mellanox OFED version 4.7-3.2.9.0
 RUN yum install -y \
@@ -99,8 +106,13 @@ RUN yum install -y centos-release-scl && \
         devtoolset-8-gcc-c++ \
         devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
-RUN source scl_source enable devtoolset-8
-ENV source scl_source enable devtoolset-8
+RUN mv /usr/bin/g++ /usr/bin/g++.old && \
+    mv /usr/bin/gcc /usr/bin/gcc.old && \
+    mv /usr/bin/gcov /usr/bin/gcov.old
+RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
+    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
+    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
+    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
 
 # Mellanox OFED version 4.7-3.2.9.0
 RUN yum install -y \
