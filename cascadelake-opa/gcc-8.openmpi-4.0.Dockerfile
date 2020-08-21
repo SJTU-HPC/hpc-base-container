@@ -1,4 +1,4 @@
-FROM centos:7 AS build
+FROM centos:7.7.1908 AS build
 
 # GNU compiler
 RUN yum install -y centos-release-scl && \
@@ -67,7 +67,7 @@ ENV LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH \
     PATH=/usr/local/openmpi/bin:$PATH
 
 
-FROM centos:7
+FROM centos:7.7.1908
 
 # GNU compiler
 RUN yum install -y centos-release-scl && \

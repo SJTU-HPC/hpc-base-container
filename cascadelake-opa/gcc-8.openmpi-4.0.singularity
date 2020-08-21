@@ -1,5 +1,5 @@
 BootStrap: docker
-From: centos:7
+From: centos:7.7.1908
 Stage: build
 
 %post
@@ -89,7 +89,7 @@ Stage: build
 
 
 BootStrap: docker
-From: centos:7
+From: centos:7.7.1908
 %post
     . /.singularity.d/env/10-docker*.sh
 
