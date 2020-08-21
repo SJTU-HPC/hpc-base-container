@@ -21,7 +21,7 @@ RUN yum install -y \
         libhfi1 opensm-libs numactl-libs \
         libatomic irqbalance opa-libopamgt openssl openssl-devel && \
     rm -rf /var/cache/yum/* && \
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloadmirror.intel.com/29278/eng/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloads.hpe.com/pub/softlib2/software1/pubsw-linux/p1485440821/v177740/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
     mkdir -p /var/tmp && tar -xf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz -C /var/tmp && \
     cd /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36 && ./INSTALL --user-space -i opa_stack -i oftools -i intel_hfi -i opa_stack_dev -i fastfabric -i delta_ipoib -i opafm -i opamgt_sdk && \
     rm -rf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36
@@ -88,7 +88,7 @@ RUN yum install -y \
         libhfi1 opensm-libs numactl-libs \
         libatomic irqbalance opa-libopamgt openssl openssl-devel && \
     rm -rf /var/cache/yum/* && \
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloadmirror.intel.com/29278/eng/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloads.hpe.com/pub/softlib2/software1/pubsw-linux/p1485440821/v177740/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
     mkdir -p /var/tmp && tar -xf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz -C /var/tmp && \
     cd /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36 && ./INSTALL --user-space -i opa_stack -i oftools -i intel_hfi -i opa_stack_dev -i fastfabric -i delta_ipoib -i opafm -i opamgt_sdk && \
     rm -rf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36
