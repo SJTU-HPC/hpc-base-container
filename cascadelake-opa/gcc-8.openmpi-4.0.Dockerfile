@@ -66,9 +66,6 @@ RUN yum install -y \
 ENV LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH \
     PATH=/usr/local/openmpi/bin:$PATH
 
-RUN wget -q -nc --no-check-certificate -P /var/tmp https://computing.llnl.gov/tutorials/mpi/samples/C/mpi_bandwidth.c && \
-    mpicc -o /usr/local/bin/mpi_bandwidth /var/tmp/mpi_bandwidth.c
-
 
 FROM centos:7
 
@@ -114,5 +111,3 @@ RUN yum install -y \
 COPY --from=build /usr/local/openmpi /usr/local/openmpi
 ENV LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH \
     PATH=/usr/local/openmpi/bin:$PATH
-
-COPY --from=build /usr/local/bin/mpi_bandwidth /usr/local/bin/mpi_bandwidth
