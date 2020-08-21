@@ -31,7 +31,7 @@ RUN yum install -y \
     cd /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36 && ./INSTALL --user-space -i opa_stack -i oftools -i intel_hfi -i opa_stack_dev -i fastfabric -i delta_ipoib -i opafm -i opamgt_sdk && \
     rm -rf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36
 
-# SLURM PMI2 version 17.11.13
+# SLURM PMI2 version 19.05.7
 RUN yum install -y \
         bzip2 \
         file \
@@ -40,11 +40,11 @@ RUN yum install -y \
         tar \
         wget && \
     rm -rf /var/cache/yum/*
-RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://download.schedmd.com/slurm/slurm-17.11.13.tar.bz2 && \
-    mkdir -p /var/tmp && tar -x -f /var/tmp/slurm-17.11.13.tar.bz2 -C /var/tmp -j && \
-    cd /var/tmp/slurm-17.11.13 &&   ./configure --prefix=/usr/local/slurm-pmi2 && \
+RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://download.schedmd.com/slurm/slurm-19.05.7.tar.bz2 && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/slurm-19.05.7.tar.bz2 -C /var/tmp -j && \
+    cd /var/tmp/slurm-19.05.7 &&   ./configure --prefix=/usr/local/slurm-pmi2 && \
     make -C contribs/pmi2 install && \
-    rm -rf /var/tmp/slurm-17.11.13.tar.bz2 /var/tmp/slurm-17.11.13
+    rm -rf /var/tmp/slurm-19.05.7.tar.bz2 /var/tmp/slurm-19.05.7
 
 # OpenMPI version 4.0.3
 RUN yum install -y \
