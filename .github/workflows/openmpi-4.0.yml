@@ -28,7 +28,7 @@ jobs:
         run: docker build . --file "cascadelake-opa/openmpi-4.0.Dockerfile" --tag $BASE_IMAGE_NAME
 
   deploy:
-    needs: gromacs-test
+    needs: test
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
