@@ -49,7 +49,7 @@ RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://
 ENV LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH \
     PATH=/usr/local/ucx/bin:$PATH
 
-# SLURM PMI2 version 17.11.13
+# SLURM PMI2 version 19.05.7
 RUN yum install -y \
         bzip2 \
         file \
@@ -58,11 +58,11 @@ RUN yum install -y \
         tar \
         wget && \
     rm -rf /var/cache/yum/*
-RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://download.schedmd.com/slurm/slurm-17.11.13.tar.bz2 && \
-    mkdir -p /var/tmp && tar -x -f /var/tmp/slurm-17.11.13.tar.bz2 -C /var/tmp -j && \
-    cd /var/tmp/slurm-17.11.13 &&   ./configure --prefix=/usr/local/slurm-pmi2 && \
+RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://download.schedmd.com/slurm/slurm-19.05.7.tar.bz2 && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/slurm-19.05.7.tar.bz2 -C /var/tmp -j && \
+    cd /var/tmp/slurm-19.05.7 &&   ./configure --prefix=/usr/local/slurm-pmi2 && \
     make -C contribs/pmi2 install && \
-    rm -rf /var/tmp/slurm-17.11.13.tar.bz2 /var/tmp/slurm-17.11.13
+    rm -rf /var/tmp/slurm-19.05.7.tar.bz2 /var/tmp/slurm-19.05.7
 
 # OpenMPI version 4.0.3
 RUN yum install -y \
