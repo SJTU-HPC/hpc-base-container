@@ -1,11 +1,25 @@
-FROM nvidia/cuda:9.2-devel-centos7 AS build
+#===========================#
+# multi-stage: build
+#===========================#
+
+FROM nvidia/cuda:10.2-devel-centos7 AS build
 
 # GNU compiler
-RUN yum install -y \
-        gcc \
-        gcc-c++ \
-        gcc-gfortran && \
+RUN yum install -y centos-release-scl && \
+    yum install -y \
+        devtoolset-8-gcc \
+        devtoolset-8-gcc-c++ \
+        devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
+ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
+    MANPATH=/opt/rh/devtoolset-8/root/usr/share/man:${MANPATH} \
+    LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
+    LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LIBRARY_PATH}} \
+    PKG_CONFIG_PATH=/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}} \
+    CC=/opt/rh/devtoolset-8/root/usr/bin/gcc \
+    CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
+    FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
+    F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
 
 # Mellanox OFED version 4.7-3.2.9.0
 RUN yum install -y \
@@ -15,7 +29,7 @@ RUN yum install -y \
     rm -rf /var/cache/yum/*
 RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox && \
     yum install -y yum-utils && \
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.2/mellanox_mlnx_ofed.repo && \
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo && \
     yum install -y \
         libibmad \
         libibmad-devel \
@@ -85,17 +99,29 @@ RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://
 ENV LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH \
     PATH=/usr/local/openmpi/bin:$PATH
 
-RUN wget -q -nc --no-check-certificate -P /var/tmp https://computing.llnl.gov/tutorials/mpi/samples/C/mpi_bandwidth.c && \
-    mpicc -o /usr/local/bin/mpi_bandwidth /var/tmp/mpi_bandwidth.c
 
-FROM nvidia/cuda:9.2-devel-centos7
+#===========================#
+# multi-stage: install
+#===========================#
+
+FROM nvidia/cuda:10.2-devel-centos7
 
 # GNU compiler
-RUN yum install -y \
-        gcc \
-        gcc-c++ \
-        gcc-gfortran && \
+RUN yum install -y centos-release-scl && \
+    yum install -y \
+        devtoolset-8-gcc \
+        devtoolset-8-gcc-c++ \
+        devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
+ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
+    MANPATH=/opt/rh/devtoolset-8/root/usr/share/man:${MANPATH} \
+    LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
+    LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LIBRARY_PATH}} \
+    PKG_CONFIG_PATH=/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}} \
+    CC=/opt/rh/devtoolset-8/root/usr/bin/gcc \
+    CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
+    FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
+    F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
 
 # Mellanox OFED version 4.7-3.2.9.0
 RUN yum install -y \
@@ -105,7 +131,7 @@ RUN yum install -y \
     rm -rf /var/cache/yum/*
 RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox && \
     yum install -y yum-utils && \
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.2/mellanox_mlnx_ofed.repo && \
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo && \
     yum install -y \
         libibmad \
         libibmad-devel \
@@ -142,5 +168,3 @@ RUN yum install -y \
 COPY --from=build /usr/local/openmpi /usr/local/openmpi
 ENV LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH \
     PATH=/usr/local/openmpi/bin:$PATH
-
-COPY --from=build /usr/local/bin/mpi_bandwidth /usr/local/bin/mpi_bandwidth
