@@ -1,5 +1,9 @@
+#===========================#
+# multi-stage: build
+#===========================#
+
 BootStrap: docker
-From: centos:7
+From: centos:7.7.1908
 Stage: build
 
 %post
@@ -80,14 +84,13 @@ Stage: build
     export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
     export PATH=/usr/local/openmpi/bin:$PATH
 
-%post
-    cd /
-    wget -q -nc --no-check-certificate -P /var/tmp https://computing.llnl.gov/tutorials/mpi/samples/C/mpi_bandwidth.c
-    mpicc -o /usr/local/bin/mpi_bandwidth /var/tmp/mpi_bandwidth.c
 
+#===========================#
+# multi-stage: install
+#===========================#
 
 BootStrap: docker
-From: centos:7
+From: centos:7.7.1908
 %post
     . /.singularity.d/env/10-docker*.sh
 
@@ -138,6 +141,3 @@ From: centos:7
 %post
     export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
     export PATH=/usr/local/openmpi/bin:$PATH
-
-%files from build
-    /usr/local/bin/mpi_bandwidth /usr/local/bin/mpi_bandwidth
