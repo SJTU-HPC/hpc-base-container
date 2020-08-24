@@ -22,14 +22,14 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
     steps:
       - uses: actions/checkout@v2
       - name: Test Build image
         run: docker build . --file "dgx2/cuda-10.2.ompi-4.0.Dockerfile" --tag $BASE_IMAGE_NAME
 
   deploy:
-    needs: test
-
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 

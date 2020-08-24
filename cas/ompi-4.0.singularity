@@ -21,7 +21,7 @@ Stage: build
 %post
     yum install -y \
         ca-certificates gnupg wget \
-        perl atlas libpsm2 infinipath-psm \
+        perl libpsm2 infinipath-psm \
         libibverbs qperf pciutils tcl \
         tcsh expect sysfsutils librdmacm \
         libibcm perftest rdma bc \
@@ -106,7 +106,7 @@ From: centos:7.7.1908
 %post
     yum install -y \
         ca-certificates gnupg wget \
-        perl atlas libpsm2 infinipath-psm \
+        perl libpsm2 infinipath-psm \
         libibverbs qperf pciutils tcl \
         tcsh expect sysfsutils librdmacm \
         libibcm perftest rdma bc \

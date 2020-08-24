@@ -14,7 +14,7 @@ RUN yum install -y \
 # Intel OPA version 10.10.1.0.36
 RUN yum install -y \
         ca-certificates gnupg wget \
-        perl atlas libpsm2 infinipath-psm \
+        perl libpsm2 infinipath-psm \
         libibverbs qperf pciutils tcl \
         tcsh expect sysfsutils librdmacm \
         libibcm perftest rdma bc \
@@ -82,7 +82,7 @@ RUN yum install -y \
 # Intel OPA version 10.10.1.0.36
 RUN yum install -y \
         ca-certificates gnupg wget \
-        perl atlas libpsm2 infinipath-psm \
+        perl libpsm2 infinipath-psm \
         libibverbs qperf pciutils tcl \
         tcsh expect sysfsutils librdmacm \
         libibcm perftest rdma bc \

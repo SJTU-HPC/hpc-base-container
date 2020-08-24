@@ -11,15 +11,20 @@ RUN yum install -y centos-release-scl && \
         devtoolset-8-gcc-c++ \
         devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
-RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
-    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
-    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
-    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
+ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
+    MANPATH=/opt/rh/devtoolset-8/root/usr/share/man:${MANPATH} \
+    LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
+    LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LIBRARY_PATH}} \
+    PKG_CONFIG_PATH=/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}} \
+    CC=/opt/rh/devtoolset-8/root/usr/bin/gcc \
+    CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
+    FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
+    F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
 
 # Intel OPA version 10.10.1.0.36
 RUN yum install -y \
         ca-certificates gnupg wget \
-        perl atlas libpsm2 infinipath-psm \
+        perl libpsm2 infinipath-psm \
         libibverbs qperf pciutils tcl \
         tcsh expect sysfsutils librdmacm \
         libibcm perftest rdma bc \
@@ -84,15 +89,20 @@ RUN yum install -y centos-release-scl && \
         devtoolset-8-gcc-c++ \
         devtoolset-8-gcc-gfortran && \
     rm -rf /var/cache/yum/*
-RUN update-alternatives --install /usr/bin/g++ g++ /opt/rh/devtoolset-8/root/usr/bin/g++ 30 && \
-    update-alternatives --install /usr/bin/gcc gcc /opt/rh/devtoolset-8/root/usr/bin/gcc 30 && \
-    update-alternatives --install /usr/bin/gcov gcov /opt/rh/devtoolset-8/root/usr/bin/gcov 30 && \
-    update-alternatives --install /usr/bin/gfortran gfortran /opt/rh/devtoolset-8/root/usr/bin/gfortran 30
+ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
+    MANPATH=/opt/rh/devtoolset-8/root/usr/share/man:${MANPATH} \
+    LD_LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}} \
+    LIBRARY_PATH=/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib${LD_LIBRARY_PATH:+:${LIBRARY_PATH}} \
+    PKG_CONFIG_PATH=/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}} \
+    CC=/opt/rh/devtoolset-8/root/usr/bin/gcc \
+    CXX=/opt/rh/devtoolset-8/root/usr/bin/g++ \
+    FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
+    F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
 
 # Intel OPA version 10.10.1.0.36
 RUN yum install -y \
         ca-certificates gnupg wget \
-        perl atlas libpsm2 infinipath-psm \
+        perl libpsm2 infinipath-psm \
         libibverbs qperf pciutils tcl \
         tcsh expect sysfsutils librdmacm \
         libibcm perftest rdma bc \
