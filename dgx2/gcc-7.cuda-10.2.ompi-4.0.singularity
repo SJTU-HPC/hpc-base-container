@@ -1,0 +1,215 @@
+#===========================#
+# multi-stage: build
+#===========================#
+
+BootStrap: docker
+From: nvidia/cuda:10.2-devel-centos7
+Stage: build
+%post
+    . /.singularity.d/env/10-docker*.sh
+
+# GNU compiler
+%post
+    yum install -y centos-release-scl
+    yum install -y \
+        devtoolset-7-gcc \
+        devtoolset-7-gcc-c++ \
+        devtoolset-7-gcc-gfortran
+    rm -rf /var/cache/yum/*
+%environment
+    export PATH=/opt/rh/devtoolset-7/root/usr/bin${PATH:+:${PATH}}
+    export MANPATH=/opt/rh/devtoolset-7/root/usr/share/man:${MANPATH}
+    export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib64:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+    export LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib64:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7${LD_LIBRARY_PATH:+:${LIBRARY_PATH}}
+    export PKG_CONFIG_PATH=/opt/rh/devtoolset-7/root/usr/lib64/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}
+    export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
+    export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
+    export FC=/opt/rh/devtoolset-7/root/usr/bin/gfortran
+    export F77=/opt/rh/devtoolset-7/root/usr/bin/gfortran
+
+# Mellanox OFED version 4.7-3.2.9.0
+%post
+    yum install -y \
+        ca-certificates \
+        gnupg \
+        wget
+    rm -rf /var/cache/yum/*
+%post
+    rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
+    yum install -y yum-utils
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo
+    yum install -y \
+        libibmad \
+        libibmad-devel \
+        libibumad \
+        libibumad-devel \
+        libibverbs \
+        libibverbs-devel \
+        libibverbs-utils \
+        libmlx4 \
+        libmlx4-devel \
+        libmlx5 \
+        libmlx5-devel \
+        librdmacm \
+        librdmacm-devel
+    rm -rf /var/cache/yum/*
+
+# UCX version 1.7.0
+%post
+    yum install -y \
+        binutils-devel \
+        file \
+        make \
+        numactl-devel \
+        wget
+    rm -rf /var/cache/yum/*
+%post
+    cd /
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://github.com/openucx/ucx/releases/download/v1.7.0/ucx-1.7.0.tar.gz && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/ucx-1.7.0.tar.gz -C /var/tmp -z
+    cd /var/tmp/ucx-1.7.0 &&   ./configure --prefix=/usr/local/ucx --disable-assertions --disable-debug --disable-doxygen-doc --disable-logging --disable-params-check --enable-optimizations --with-cuda=/usr/local/cuda/
+    make -j$(nproc)
+    make -j$(nproc) install
+    rm -rf /var/tmp/ucx-1.7.0.tar.gz /var/tmp/ucx-1.7.0
+%environment
+    export LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/ucx/bin:$PATH
+%post
+    export LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/ucx/bin:$PATH
+
+# SLURM PMI2 version 19.05.7
+%post
+    yum install -y \
+        bzip2 \
+        file \
+        make \
+        perl \
+        tar \
+        wget
+    rm -rf /var/cache/yum/*
+%post
+    cd /
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://download.schedmd.com/slurm/slurm-19.05.7.tar.bz2
+    mkdir -p /var/tmp && tar -x -f /var/tmp/slurm-19.05.7.tar.bz2 -C /var/tmp -j
+    cd /var/tmp/slurm-19.05.7 &&   ./configure --prefix=/usr/local/slurm-pmi2
+    make -C contribs/pmi2 install
+    rm -rf /var/tmp/slurm-19.05.7.tar.bz2 /var/tmp/slurm-19.05.7
+
+# OpenMPI version 4.0.3
+%post
+    yum install -y \
+        bzip2 \
+        file \
+        hwloc \
+        make \
+        numactl-devel \
+        openssh-clients \
+        perl \
+        tar \
+        wget
+    rm -rf /var/cache/yum/*
+%post
+    cd /
+    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://www.open-mpi.org/software/ompi/v4.0/downloads/openmpi-4.0.3.tar.bz2 && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/openmpi-4.0.3.tar.bz2 -C /var/tmp -j
+    cd /var/tmp/openmpi-4.0.3 &&   ./configure --prefix=/usr/local/openmpi --disable-getpwuid --enable-orterun-prefix-by-default --with-pmi=/usr/local/slurm-pmi2 --with-ucx=/usr/local/ucx --with-cuda=/usr/local/cuda/ --without-verbs
+    make -j$(nproc)
+    make -j$(nproc) install
+    rm -rf /var/tmp/openmpi-4.0.3.tar.bz2 /var/tmp/openmpi-4.0.3
+%environment
+    export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/openmpi/bin:$PATH
+%post
+    export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/openmpi/bin:$PATH
+
+
+#===========================#
+# multi-stage: install
+#===========================#
+
+BootStrap: docker
+From: nvidia/cuda:10.2-devel-centos7
+%post
+    . /.singularity.d/env/10-docker*.sh
+
+# GNU compiler
+%post
+    yum install -y centos-release-scl
+    yum install -y \
+        devtoolset-7-gcc \
+        devtoolset-7-gcc-c++ \
+        devtoolset-7-gcc-gfortran
+    rm -rf /var/cache/yum/*
+%environment
+    export PATH=/opt/rh/devtoolset-7/root/usr/bin${PATH:+:${PATH}}
+    export MANPATH=/opt/rh/devtoolset-7/root/usr/share/man:${MANPATH}
+    export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib64:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+    export LIBRARY_PATH=/opt/rh/devtoolset-7/root/usr/lib64:/opt/rh/devtoolset-7/root/usr/lib/gcc/x86_64-redhat-linux/7${LD_LIBRARY_PATH:+:${LIBRARY_PATH}}
+    export PKG_CONFIG_PATH=/opt/rh/devtoolset-7/root/usr/lib64/pkgconfig${PKG_CONFIG_PATH:+:${PKG_CONFIG_PATH}}
+    export CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
+    export CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
+    export FC=/opt/rh/devtoolset-7/root/usr/bin/gfortran
+    export F77=/opt/rh/devtoolset-7/root/usr/bin/gfortran
+
+# Mellanox OFED version 4.7-3.2.9.0
+%post
+    yum install -y \
+        ca-certificates \
+        gnupg \
+        wget
+    rm -rf /var/cache/yum/*
+%post
+    rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
+    yum install -y yum-utils
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo
+    yum install -y \
+        libibmad \
+        libibmad-devel \
+        libibumad \
+        libibumad-devel \
+        libibverbs \
+        libibverbs-devel \
+        libibverbs-utils \
+        libmlx4 \
+        libmlx4-devel \
+        libmlx5 \
+        libmlx5-devel \
+        librdmacm \
+        librdmacm-devel
+    rm -rf /var/cache/yum/*
+
+# UCX
+%post
+    yum install -y \
+        binutils
+    rm -rf /var/cache/yum/*
+%files from build
+    /usr/local/ucx /usr/local/ucx
+%environment
+    export LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/ucx/bin:$PATH
+%post
+    export LD_LIBRARY_PATH=/usr/local/ucx/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/ucx/bin:$PATH
+
+# SLURM PMI2
+%files from build
+    /usr/local/slurm-pmi2 /usr/local/slurm-pmi2
+
+
+# OpenMPI
+%post
+    yum install -y \
+        hwloc \
+        openssh-clients
+    rm -rf /var/cache/yum/*
+%files from build
+    /usr/local/openmpi /usr/local/openmpi
+%environment
+    export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/openmpi/bin:$PATH
+%post
+    export LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/openmpi/bin:$PATH
