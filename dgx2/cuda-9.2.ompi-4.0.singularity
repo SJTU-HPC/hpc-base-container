@@ -16,7 +16,7 @@ Stage: build
         gcc-gfortran
     rm -rf /var/cache/yum/*
 
-# Mellanox OFED version 4.7-3.2.9.0
+# Mellanox OFED version 5.0-2.1.8.0
 %post
     yum install -y \
         ca-certificates \
@@ -26,7 +26,7 @@ Stage: build
 %post
     rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
     yum install -y yum-utils
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/5.0-2.1.8.0/rhel7.8/mellanox_mlnx_ofed.repo
     yum install -y \
         libibmad \
         libibmad-devel \
@@ -131,7 +131,7 @@ From: nvidia/cuda:9.2-devel-centos7
         gcc-gfortran
     rm -rf /var/cache/yum/* 
 
-# Mellanox OFED version 4.7-3.2.9.0
+# Mellanox OFED version 5.0-2.1.8.0
 %post
     yum install -y \
         ca-certificates \
@@ -141,7 +141,7 @@ From: nvidia/cuda:9.2-devel-centos7
 %post
     rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
     yum install -y yum-utils
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/5.0-2.1.8.0/rhel7.8/mellanox_mlnx_ofed.repo
     yum install -y \
         libibmad \
         libibmad-devel \

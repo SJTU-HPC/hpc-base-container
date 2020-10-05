@@ -21,7 +21,7 @@ ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
     FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
     F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
 
-# Mellanox OFED version 4.7-3.2.9.0
+# Mellanox OFED version 5.0-2.1.8.0
 RUN yum install -y \
         ca-certificates \
         gnupg \
@@ -29,7 +29,7 @@ RUN yum install -y \
     rm -rf /var/cache/yum/*
 RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox && \
     yum install -y yum-utils && \
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo && \
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/5.0-2.1.8.0/rhel7.8/mellanox_mlnx_ofed.repo && \
     yum install -y \
         libibmad \
         libibmad-devel \
@@ -123,7 +123,7 @@ ENV PATH=/opt/rh/devtoolset-8/root/usr/bin${PATH:+:${PATH}} \
     FC=/opt/rh/devtoolset-8/root/usr/bin/gfortran \
     F77=/opt/rh/devtoolset-8/root/usr/bin/gfortran
 
-# Mellanox OFED version 4.7-3.2.9.0
+# Mellanox OFED version 5.0-2.1.8.0
 RUN yum install -y \
         ca-certificates \
         gnupg \
@@ -131,7 +131,7 @@ RUN yum install -y \
     rm -rf /var/cache/yum/*
 RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox && \
     yum install -y yum-utils && \
-    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/4.7-3.2.9.0/rhel7.7/mellanox_mlnx_ofed.repo && \
+    yum-config-manager --add-repo https://linux.mellanox.com/public/repo/mlnx_ofed/5.0-2.1.8.0/rhel7.8/mellanox_mlnx_ofed.repo && \
     yum install -y \
         libibmad \
         libibmad-devel \
