@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths:
-      - 'dgx2/gcc-8.cuda-10.2.ompi-4.0.Dockerfile'
+      - 'dgx2/gcc-8.cuda-10.2.ompi-4.0.**'
   pull_request:
     branches: 
       - master
     paths:
-      - 'dgx2/gcc-8.cuda-10.2.ompi-4.0.Dockerfile'
+      - 'dgx2/gcc-8.cuda-10.2.ompi-4.0.**'
 
 env:
   BASE_IMAGE_NAME: gcc-8.cuda-10.2.ompi-4.0

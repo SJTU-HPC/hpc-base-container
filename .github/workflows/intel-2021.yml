@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths:
-      - 'cas/intel-2021.Dockerfile'
+      - 'cas/intel-2021.**'
   pull_request:
     branches: 
       - master
     paths:
-      - 'cas/intel-2021.Dockerfile'
+      - 'cas/intel-2021.**'
 
 env:
   BASE_IMAGE_NAME: intel-2021

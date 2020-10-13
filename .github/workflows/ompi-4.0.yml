@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths:
-      - 'cas/ompi-4.0.Dockerfile'
+      - 'cas/ompi-4.0.**'
   pull_request:
     branches: 
       - master
     paths:
-      - 'cas/ompi-4.0.Dockerfile'
+      - 'cas/ompi-4.0.**'
 
 env:
   BASE_IMAGE_NAME: ompi-4.0

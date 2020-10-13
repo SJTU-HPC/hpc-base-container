@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths:
-      - 'cas/gcc-8.ompi-4.0.Dockerfile'
+      - 'cas/gcc-8.ompi-4.0.**'
   pull_request:
     branches: 
       - master
     paths:
-      - 'cas/gcc-8.ompi-4.0.Dockerfile'
+      - 'cas/gcc-8.ompi-4.0.**'
 
 env:
   BASE_IMAGE_NAME: gcc-8.ompi-4.0
