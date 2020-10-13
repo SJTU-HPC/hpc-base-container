@@ -46,6 +46,21 @@ RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox &&
         librdmacm-devel && \
     rm -rf /var/cache/yum/*
 
+# GDRCOPY version 1.3
+RUN yum install -y \
+        make \
+        wget && \
+    rm -rf /var/cache/yum/*
+RUN mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://github.com/NVIDIA/gdrcopy/archive/v1.3.tar.gz && \
+    mkdir -p /var/tmp && tar -x -f /var/tmp/v1.3.tar.gz -C /var/tmp -z && \
+    cd /var/tmp/gdrcopy-1.3 && \
+    mkdir -p /usr/local/gdrcopy/include /usr/local/gdrcopy/lib64 && \
+    make PREFIX=/usr/local/gdrcopy lib lib_install && \
+    echo "/usr/local/gdrcopy/lib64" >> /etc/ld.so.conf.d/hpccm.conf && ldconfig && \
+    rm -rf /var/tmp/gdrcopy-1.3 /var/tmp/v1.3.tar.gz
+ENV CPATH=/usr/local/gdrcopy/include:$CPATH \
+    LIBRARY_PATH=/usr/local/gdrcopy/lib64:$LIBRARY_PATH
+
 # UCX version 1.7.0
 RUN yum install -y \
         binutils-devel \
