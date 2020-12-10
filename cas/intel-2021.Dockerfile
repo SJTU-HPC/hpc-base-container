@@ -48,49 +48,48 @@ RUN yum install -y \
         intel-hpckit-getting-started \
         intel-oneapi-common-vars \
         intel-oneapi-common-licensing \
-        intel-oneapi-dpcpp-cpp-compiler \
-        intel-oneapi-dpcpp-cpp-compiler-pro \
-        intel-oneapi-ifort \
+        intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
+        intel-oneapi-compiler-fortran \
         intel-oneapi-mkl-devel \
         intel-oneapi-mpi-devel && \
     rm -rf /var/cache/yum/*
 
-ENV CPATH='/opt/intel/oneapi/ipp/2021.1-beta08/include:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/include:\
-/opt/intel/oneapi/ippcp/2021.1-beta08/include:\
-/opt/intel/oneapi/mpi/2021.1-beta09/include:\
-/opt/intel/oneapi/mkl/2021.1-beta09/include' \
+ENV CPATH='/opt/intel/oneapi/ipp/latest/include:\
+/opt/intel/oneapi/compiler/latest/linux/include:\
+/opt/intel/oneapi/ippcp/latest/include:\
+/opt/intel/oneapi/mpi/latest/include:\
+/opt/intel/oneapi/mkl/latest/include' \
     IPPCP_TARGET_ARCH='intel64' \
-    IPPCRYPTOROOT='/opt/intel/oneapi/ippcp/2021.1-beta08' \
-    IPPROOT='/opt/intel/oneapi/ipp/2021.1-beta08' \
+    IPPCRYPTOROOT='/opt/intel/oneapi/ippcp/latest' \
+    IPPROOT='/opt/intel/oneapi/ipp/latest' \
     IPP_TARGET_ARCH='intel64' \
-    I_MPI_ROOT='/opt/intel/oneapi/mpi/2021.1-beta09' \
-    LD_LIBRARY_PATH='/usr/lib64:/opt/intel/oneapi/ipp/2021.1-beta08/lib/intel64:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/lib:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/lib/x64:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/lib/emu:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/compiler/lib/intel64_lin:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/compiler/lib:\
-/opt/intel/oneapi/ippcp/2021.1-beta08/lib/intel64:\
-/opt/intel/oneapi/mpi/2021.1-beta09/lib/release:\
-/opt/intel/oneapi/mpi/2021.1-beta09/lib:\
-/opt/intel/oneapi/debugger/10.0-beta09/dep/lib:\
-/opt/intel/oneapi/debugger/10.0-beta09/libipt/intel64/lib:\
-/opt/intel/oneapi/debugger/10.0-beta09/gdb/intel64/lib:\
-/opt/intel/oneapi/mkl/2021.1-beta09/lib/intel64' \
-    LIBRARY_PATH='/opt/intel/oneapi/ipp/2021.1-beta08/lib/intel64:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/lib:\
-/opt/intel/oneapi/ippcp/2021.1-beta08/lib/intel64:\
-/opt/intel/oneapi/mpi/2021.1-beta09/lib/release:\
-/opt/intel/oneapi/mpi/2021.1-beta09/lib:\
-/opt/intel/oneapi/mkl/2021.1-beta09/lib/intel64' \
-    MKLROOT='/opt/intel/oneapi/mkl/2021.1-beta09' \
+    I_MPI_ROOT='/opt/intel/oneapi/mpi/latest' \
+    LD_LIBRARY_PATH='/usr/lib64:/opt/intel/oneapi/ipp/latest/lib/intel64:\
+/opt/intel/oneapi/compiler/latest/linux/lib:\
+/opt/intel/oneapi/compiler/latest/linux/lib/x64:\
+/opt/intel/oneapi/compiler/latest/linux/lib/emu:\
+/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:\
+/opt/intel/oneapi/compiler/latest/linux/compiler/lib:\
+/opt/intel/oneapi/ippcp/latest/lib/intel64:\
+/opt/intel/oneapi/mpi/latest/lib/release:\
+/opt/intel/oneapi/mpi/latest/lib:\
+/opt/intel/oneapi/debugger/latest/dep/lib:\
+/opt/intel/oneapi/debugger/latest/libipt/intel64/lib:\
+/opt/intel/oneapi/debugger/latest/gdb/intel64/lib:\
+/opt/intel/oneapi/mkl/latest/lib/intel64' \
+    LIBRARY_PATH='/opt/intel/oneapi/ipp/latest/lib/intel64:\
+/opt/intel/oneapi/compiler/latest/linux/lib:\
+/opt/intel/oneapi/ippcp/latest/lib/intel64:\
+/opt/intel/oneapi/mpi/latest/lib/release:\
+/opt/intel/oneapi/mpi/latest/lib:\
+/opt/intel/oneapi/mkl/latest/lib/intel64' \
+    MKLROOT='/opt/intel/oneapi/mkl/latest' \
     ONEAPI_ROOT='/opt/intel/oneapi' \
-    PATH='/opt/intel/oneapi/compiler/2021.1-beta09/linux/bin/intel64: \
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/bin:\
-/opt/intel/oneapi/compiler/2021.1-beta09/linux/ioc/bin:\
-/opt/intel/oneapi/mpi/2021.1-beta09/bin:\
-/opt/intel/oneapi/debugger/10.0-beta09/gdb/intel64/bin:\
-/opt/intel/oneapi/mkl/2021.1-beta09/bin/intel64:\
+    PATH='/opt/intel/oneapi/compiler/latest/linux/bin/intel64: \
+/opt/intel/oneapi/compiler/latest/linux/bin:\
+/opt/intel/oneapi/compiler/latest/linux/ioc/bin:\
+/opt/intel/oneapi/mpi/latest/bin:\
+/opt/intel/oneapi/debugger/latest/gdb/intel64/bin:\
+/opt/intel/oneapi/mkl/latest/bin/intel64:\
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \
-    PKG_CONFIG_PATH='/opt/intel/oneapi/mkl/2021.1-beta09/tools/pkgconfig'
+    PKG_CONFIG_PATH='/opt/intel/oneapi/mkl/latest/tools/pkgconfig'
