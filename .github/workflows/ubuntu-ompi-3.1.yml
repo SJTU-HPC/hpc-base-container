@@ -14,7 +14,7 @@ on:
       - 'cas/ubuntu/ompi-3.1.**'
 
 env:
-  BASE_IMAGE_NAME: ompi-3.1
+  BASE_IMAGE_NAME: ompi-3.1-ubuntu
 
   DOCKERHUB_REPO: hpc-base-container
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
