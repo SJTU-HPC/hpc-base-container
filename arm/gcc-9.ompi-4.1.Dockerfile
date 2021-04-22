@@ -143,6 +143,7 @@ COPY --from=build /usr/local/slurm-pmi2 /usr/local/slurm-pmi2
 # OpenMPI
 RUN yum install -y \
         hwloc \
+        make \
         openssh-clients && \
     rm -rf /var/cache/yum/*
 COPY --from=build /usr/local/openmpi /usr/local/openmpi
