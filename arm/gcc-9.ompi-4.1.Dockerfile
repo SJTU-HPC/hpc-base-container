@@ -78,7 +78,7 @@ RUN yum install -y \
     rm -rf /var/cache/yum/* && \
     cd / && mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://www.open-mpi.org/software/ompi/v4.1/downloads/openmpi-4.1.0.tar.bz2 && \
     mkdir -p /var/tmp && tar -x -f /var/tmp/openmpi-4.1.0.tar.bz2 -C /var/tmp -j && \
-    cd /var/tmp/openmpi-4.1.0 && ./configure --prefix=/usr/local/openmpi --disable-getpwuid --enable-orterun-prefix-by-default --with-pmi=/usr/local/slurm-pmi2 --without-cuda --without-verbs --with-ucx && \
+    cd /var/tmp/openmpi-4.1.0 && ./configure --prefix=/usr/local/openmpi --disable-getpwuid --enable-orterun-prefix-by-default --enable-mpi1-compatibility --with-pmi=/usr/local/slurm-pmi2 --without-cuda --without-verbs --with-ucx && \
     make -j$(nproc) && make -j$(nproc) install && \
     rm -rf /var/tmp/openmpi-4.1.0.tar.bz2 /var/tmp/openmpi-4.1.0
 ENV LD_LIBRARY_PATH=/usr/local/openmpi/lib:$LD_LIBRARY_PATH \
