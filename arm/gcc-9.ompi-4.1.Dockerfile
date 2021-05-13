@@ -45,6 +45,10 @@ RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox &&
         libibcm \
         libibcm-devel \
         ucx-devel \
+	ucx-cma \
+	ucx-ib \
+	ucx-ib-cm \
+	ucx-rdmacm \
         librdmacm \
         librdmacm-devel && \
     rm -rf /var/cache/yum/*
@@ -133,6 +137,10 @@ RUN rpm --import https://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox &&
         libibcm \
         libibcm-devel \
         ucx-devel \
+        ucx-cma \
+        ucx-ib \
+        ucx-ib-cm \
+        ucx-rdmacm \
         librdmacm \
         librdmacm-devel && \
     rm -rf /var/cache/yum/*
