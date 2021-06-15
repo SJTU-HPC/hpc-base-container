@@ -1,4 +1,4 @@
-# hpc-app-container
+# HPC Container
 
 [![Join the chat at https://gitter.im/hpc-app-container/community](https://badges.gitter.im/hpc-app-container/community.svg)](https://gitter.im/hpc-app-container/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
