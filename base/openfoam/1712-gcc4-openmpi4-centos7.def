@@ -51,7 +51,7 @@ From: centos:7
     rm -f $pkg-$vrs.tgz
 
     ### Download ThirdParty
-    wget http://jaist.dl.sourceforge.net/project/openfoam/v1712/ThirdParty-v1712.tgz
+    wget https://netactuate.dl.sourceforge.net/project/openfoam/v1712/ThirdParty-v1712.tgz
     tar -xzf ThirdParty-$vrs.tgz
     rm -f ThirdParty-$vrs.tgz
 

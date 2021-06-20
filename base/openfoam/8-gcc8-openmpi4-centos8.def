@@ -3,7 +3,7 @@ From: centos:8
 
 %help
     This recipe provides an OpenFOAM-8 environment installed 
-    with GCC and OpenMPI-4.
+    with GCC 8 and OpenMPI-4 on CentOS 8.
 
 %labels
     Author Fatih Ertinaz
