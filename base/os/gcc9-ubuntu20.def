@@ -1,0 +1,72 @@
+Bootstrap: docker
+From: ubuntu:20.04
+
+%help
+    This container image provides Ubuntu 20.04 with GCC 9.
+    Refer to https://github.com/ARM-software/Tool-Solutions/blob/master/docker/pytorch-aarch64/Dockerfile
+
+%labels
+    Package GCC-9
+
+%post
+    ### Install core OS packages
+    apt-get -y update && \
+        apt-get -y install software-properties-common && \
+        add-apt-repository ppa:ubuntu-toolchain-r/test && \
+        apt-get -y install \
+          autoconf \
+          bc \
+          build-essential \
+          cmake \
+          curl \
+          g++-9 \
+          gcc-7 \
+          gcc-9 \
+          gettext-base \
+          gfortran-9 \
+          git \
+          iputils-ping \
+          libbz2-dev \
+          libc++-dev \
+          libcgal-dev \
+          libffi-dev \
+          libfreetype6-dev \
+          libhdf5-dev \
+          libjpeg-dev \
+          liblzma-dev \
+          libncurses5-dev \
+          libncursesw5-dev \
+          libpng-dev \
+          libreadline-dev \
+          libssl-dev \
+          libsqlite3-dev \
+          libxml2-dev \
+          libxslt-dev \
+          locales \
+          moreutils \
+          openjdk-8-jdk \
+          openssl \
+          python3.8 \
+          python3.8-dev \
+          python3.8-distutils \
+          python3.8-venv \
+          python3-pip \
+          python-openssl \
+          rsync \
+          scons \
+          ssh \
+          sudo \
+          time \
+          unzip \
+          vim \
+          wget \
+          xz-utils \
+          zip \
+          zlib1g-dev
+
+    ### Make gcc 9 the default
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 1 --slave /usr/bin/g++ g++ /usr/bin/g++-9 && \
+    update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-9 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+
