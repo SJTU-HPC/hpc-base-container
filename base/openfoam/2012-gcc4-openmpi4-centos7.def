@@ -58,18 +58,6 @@ From: centos:7
     ### Change dir to OpenFOAM-version
     cd $pkg-$vrs
     
-    # sed -i 's/boost_version=boost_1_66_0/boost_version=boost-none/' etc/config.sh/CGAL
-    # sed -i 's/boost_version=boost_1_66_0/boost_version=boost-none/' etc/config.sh/CGAL
-    # sed -i 's/cgal_version=CGAL-4.9.1/cgal_version=cgal-none/' etc/config.sh/CGAL
-    # sed -i 's/fftw_version=fftw-3.3.7/fftw_version=fftw-none/' etc/config.sh/FFTW
-    # sed -i 's/gperftools_version=gperftools-2.5/gperftools_version=gperftools-none/' etc/config.sh/gperftools
-    # sed -i 's/hypre_version=hypre-2.11.2/hypre_version=hypre-none/' etc/config.sh/hypre
-    # sed -i 's/KAHIP_VERSION=kahip-2.12/KAHIP_VERSION=kahip-none/' etc/config.sh/kahip
-    # sed -i 's/METIS_VERSION=metis-5.1.0/METIS_VERSION=metis-system/' etc/config.sh/metis
-    # sed -i 's/MGRIDGEN_VERSION=ParMGridGen-1.0/MGRIDGEN_VERSION=mgridgen-none/' etc/config.sh/mgridgen
-    # sed -i 's/ParaView_VERSION=5.6.3/ParaView_VERSION=none/' etc/config.sh/paraview
-    # sed -i 's/petsc_version=petsc-3.9.3/petsc_version=petsc-none/' etc/config.sh/petsc
-
     export MPI_ARCH_PATH=$MPI_DIR >> $SINGULARITY_ENVIRONMENT
 
     ### Source OF
