@@ -2,12 +2,12 @@ Bootstrap: docker
 From: centos:7
 
 %help
-    This container image provides an OpenFOAM-v1712 environment installed 
-    with GCC 7 and OpenMPI-4 on CentOS 8.
+    This container image provides an OpenFOAM-v2012 environment installed 
+    with GCC 8 and OpenMPI-4 on CentOS 8.
 
 %labels
     Author Fatih Ertinaz
-    Package OpenFOAM-v1712
+    Package OpenFOAM-v2012
 
 %post
     ### Install prerequisites
@@ -39,34 +39,35 @@ From: centos:7
 
     ### OpenFOAM version
     pkg=OpenFOAM
-    vrs=v1712
+    vrs=v2012
 
     ### Install under /opt
     base=/opt/$pkg
     mkdir -p $base && cd $base
 
     ### Download OF
-    wget http://jaist.dl.sourceforge.net/project/openfoam/v1712/OpenFOAM-v1712.tgz
+    wget http://jaist.dl.sourceforge.net/project/openfoam/v2012/OpenFOAM-v2012.tgz
     tar -xzf $pkg-$vrs.tgz
     rm -f $pkg-$vrs.tgz
 
     ### Download ThirdParty
-    wget https://netactuate.dl.sourceforge.net/project/openfoam/v1712/ThirdParty-v1712.tgz
+    wget http://jaist.dl.sourceforge.net/project/openfoam/v2012/ThirdParty-v2012.tgz
     tar -xzf ThirdParty-$vrs.tgz
     rm -f ThirdParty-$vrs.tgz
 
     ### Change dir to OpenFOAM-version
     cd $pkg-$vrs
     
-    # sed -i 's/boost_version=boost_1_64_0/boost_version=boost-none/' etc/config.sh/CGAL
+    # sed -i 's/boost_version=boost_1_66_0/boost_version=boost-none/' etc/config.sh/CGAL
+    # sed -i 's/boost_version=boost_1_66_0/boost_version=boost-none/' etc/config.sh/CGAL
     # sed -i 's/cgal_version=CGAL-4.9.1/cgal_version=cgal-none/' etc/config.sh/CGAL
     # sed -i 's/fftw_version=fftw-3.3.7/fftw_version=fftw-none/' etc/config.sh/FFTW
     # sed -i 's/gperftools_version=gperftools-2.5/gperftools_version=gperftools-none/' etc/config.sh/gperftools
     # sed -i 's/hypre_version=hypre-2.11.2/hypre_version=hypre-none/' etc/config.sh/hypre
-    # sed -i 's/KAHIP_VERSION=kahip-2.00/KAHIP_VERSION=kahip-none/' etc/config.sh/kahip
+    # sed -i 's/KAHIP_VERSION=kahip-2.12/KAHIP_VERSION=kahip-none/' etc/config.sh/kahip
     # sed -i 's/METIS_VERSION=metis-5.1.0/METIS_VERSION=metis-system/' etc/config.sh/metis
     # sed -i 's/MGRIDGEN_VERSION=ParMGridGen-1.0/MGRIDGEN_VERSION=mgridgen-none/' etc/config.sh/mgridgen
-    # sed -i 's/ParaView_VERSION=5.4.1/ParaView_VERSION=none/' etc/config.sh/paraview
+    # sed -i 's/ParaView_VERSION=5.6.3/ParaView_VERSION=none/' etc/config.sh/paraview
     # sed -i 's/petsc_version=petsc-3.9.3/petsc_version=petsc-none/' etc/config.sh/petsc
 
     export MPI_ARCH_PATH=$MPI_DIR >> $SINGULARITY_ENVIRONMENT
@@ -82,12 +83,12 @@ From: centos:7
 
     cd $base/ThirdParty-$vrs
     rm -rf build
-    rm -rf boost* CGAL* fftw* kahip* openmpi* ParaView* scotch*
+    rm -rf boost_* CGAL-* fftw-* kahip-* openmpi-* ParaView-* scotch_*
 
     strip $FOAM_APPBIN/*
 
     ### Source bashrc at runtime
-    echo '. /opt/OpenFOAM/OpenFOAM-v1712/etc/bashrc' >> $SINGULARITY_ENVIRONMENT
+    echo '. /opt/OpenFOAM/OpenFOAM-v2012/etc/bashrc' >> $SINGULARITY_ENVIRONMENT
 
 %environment
     export MPI_DIR=/opt/openmpi-4.0.3
