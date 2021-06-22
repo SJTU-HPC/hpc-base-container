@@ -1,0 +1,45 @@
+BootStrap: docker
+From: mathworks/matlab-deps:latest
+Stage: build
+
+%labels
+    MAINTAINER MathWorks
+
+%files
+    matlab-install /
+    matlab_installer_input.txt /matlab_installer_input.txt
+
+%post
+    cd /matlab-install && \
+    ./install -mode silent \
+        -inputFile /matlab_installer_input.txt \
+        -outputFile /tmp/mlinstall.log \
+        -destinationFolder /usr/local/MATLAB \
+    ; EXIT=$? && cat /tmp/mlinstall.log && test $EXIT -eq 0
+
+
+BootStrap: docker
+From: mathworks/matlab-deps
+
+%files from build
+    /usr/local/MATLAB /usr/local/MATLAB
+
+%files
+    startmatlab.sh /opt/startscript/
+
+%post
+    chmod +x /opt/startscript/startmatlab.sh && \
+    ln -s /usr/local/MATLAB/bin/matlab /usr/local/bin/matlab
+    useradd -ms /bin/bash matlab
+    echo "matlab ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/matlab \
+    && chmod 0440 /etc/sudoers.d/matlab
+
+%files
+    network.lic /usr/local/MATLAB/licenses/
+
+%post
+    su matlab
+    cd /home/matlab
+
+%runscript
+    sh /opt/startscript/startmatlab.sh
