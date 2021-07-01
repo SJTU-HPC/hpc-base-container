@@ -3,7 +3,7 @@ From: centos:7
 
 %help
     This container image provides an OpenFOAM-v2012 environment installed 
-    with GCC 8 and OpenMPI-4 on CentOS 8.
+    with GCC 4 and OpenMPI-4 on CentOS 7.
 
 %labels
     Author Fatih Ertinaz
