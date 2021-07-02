@@ -1,0 +1,82 @@
+BootStrap: docker
+From: debian
+
+%help
+    This recipe provides an Gerris environment installed
+    with GCC 4.8.5 and OpenMPI-4.0.3 on debian 8. 
+
+%labels
+    Author HPC_SJTU
+
+%environment
+    export HYPRE=/usr/local/hypre
+    export LD_LIBRARY_PATH=${HYPRE}/lib:$LD_LIBRARY_PATH
+    export PATH=$PATH:/usr/local/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+%post
+    ### Install prerequisites
+    apt-get update
+    echo y | apt-get install yasm nasm build-essential automake autoconf libtool  \
+                     pkg-config libcurl4-openssl-dev  intltool libxml2-dev libgtk2.0-dev \
+		     libnotify-dev libglib2.0-dev libevent-dev gnuplot imagemagick wget vim \
+		     git cdbs debhelper autotools-dev  libglib2.0-dev  libnetpbm10-dev  \
+		     gtk-doc-tools cdbs debhelper autotools-dev libglib2.0-dev libnetcdf-dev \
+		     libgsl0-dev libproj-dev libfftw3-dev python gfortran chrpath
+    
+    ### Download openmpi and install
+    cd /opt
+    wget http://gerris.dalembert.upmc.fr/debian/popinet_key.asc
+    apt-key add popinet_key.asc
+    wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.3.tar.bz2
+    tar xf openmpi-4.0.3.tar.bz2   
+    cd openmpi-4.0.3
+    ./configure && make -j 2 && make install
+    cd ..
+    
+    ### Update environment - OpenMPI
+    export PATH=$PATH:/usr/local/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+    
+    ### Download FFmpeg and install    
+    wget https://github.com/FFmpeg/FFmpeg/archive/n4.3.1.tar.gz
+    tar xf n4.3.1.tar.gz
+    cd FFmpeg-n4.3.1
+    ./configure && make -j 2 && make install
+    cd ..
+
+    ### Download gts and install
+    wget http://download.opensuse.org/repositories/home:/popinet/Debian_8.0/gts-snapshot_0.7.6-121130.tar.gz
+    tar xf gts-snapshot_0.7.6-121130.tar.gz 
+    cd gts-snapshot
+    ./configure && make -j 2 && make install  
+    cd ..
+    echo "/usr/local/lib " >> /etc/ld.so.conf
+    /sbin/ldconfig
+
+    ### Download hypre and install
+    tar xf hypre.tar.gz 
+    export HYPRE=/usr/local/hypre
+    export LD_LIBRARY_PATH=${HYPRE}/lib:$LD_LIBRARY_PATH
+    cd hypre/src
+    ./configure --prefix=$HYPRE --enable-shared
+    make -j 2 && make install
+    /sbin/ldconf
+    cd ../..
+    
+    ### Download gerris and install
+    wget http://download.opensuse.org/repositories/home:/popinet/Debian_8.0/gerris-snapshot_20131206.tar.gz    
+    tar xf gerris-snapshot_20131206.tar.gz 
+    cd gerris-snapshot
+    CPPFLAGS=-I/usr/local/hypre/include LDFLAGS="-L/usr/local/hypre/lib -lmpi_cxx" ./configure
+    make -j 2 && make install
+    /sbin/ldconfig
+
+    ### clean packet
+    rm -rf /optopenmpi-4.0.3.tar.bz2
+    rm -rf /opt/hypre.tar.gz
+    rm -rf /opt/n4.3.1.tar.gz 
+    rm -rf /opt/ gts-snapshot_0.7.6-121130.tar.gz
+    rm -rf /optgerris-snapshot_20131206.tar.gz
+%runscript
+    gerris2D --version
