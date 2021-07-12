@@ -1,0 +1,52 @@
+BootStrap: docker
+From: centos:7.7.1908
+
+%help
+    This recipe provides an Gerris environment installed
+    with GCC 4.8.5 
+
+%labels
+    Author HPC_SJTU
+
+%environment
+    export PATH=$PATH:/usr/local/fsl/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fsl/lib
+
+%post
+    ### Install prerequisites
+    echo y | yum -y update 
+    echo y | yum -y groupinstall "Development Tools" 
+    echo y | yum -y install wget  libffi-devel  which libpng12 libmng
+    echo y | yum -y install expat-devel libX11-devel mesa-libGL-devel zlib-devel
+    
+    ### install rely for opengl
+    echo "[linuxtech]" >> /etc/yum.repos.d/linuxtech.repo
+    echo "name=LinuxTECH" >> /etc/yum.repos.d/linuxtech.repo
+    echo "baseurl=http://pkgrepo.linuxtech.net/el6/release/" >> /etc/yum.repos.d/linuxtech.repo
+    echo "enabled=1" >> /etc/yum.repos.d/linuxtech.repo
+    echo "gpgcheck=1" >> /etc/yum.repos.d/linuxtech.repo
+    echo "gpgkey=http://pkgrepo.linuxtech.net/el6/release/RPM-GPG-KEY-LinuxTECH.NET" >> /etc/yum.repos.d/linuxtech.repo
+
+    yum list mesa*
+    echo y | yum install -y mesa* freeglut* *GLEW* freeglut libGLEW
+    echo y | yum -y install libglew-devel libquadmath-devel
+    
+    ### download FSL 
+    cd /opt
+    echo y | yum -y install wget which
+    wget https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py
+    python fslinstaller.py -o
+    tar -zxvf fsl*.tar.gz -C /usr/local/
+	
+    ### set environment for FSL
+    export PATH=$PATH:/usr/local/fsl/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fsl/lib
+    
+    ### install FSL    
+    /usr/local/fsl/etc/fslconf/post_install.sh -f /usr/local/fsl/
+
+    ### clean packet
+    cd /opt
+    rm -rf fsl*.tar.gz
+%runscript
+    flirt -version
