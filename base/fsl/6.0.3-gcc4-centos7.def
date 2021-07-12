@@ -2,7 +2,7 @@ BootStrap: docker
 From: centos:7.7.1908
 
 %help
-    This recipe provides an Gerris environment installed
+    This recipe provides an FSL environment installed
     with GCC 4.8.5 
 
 %labels
