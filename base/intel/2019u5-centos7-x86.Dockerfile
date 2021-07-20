@@ -3,6 +3,7 @@ FROM centos:7
 SHELL ["/bin/bash", "--login", "-c"]
 
 RUN yum install -y cpio wget
+RUN yum groupinstall 'Development Tools'
 
 WORKDIR /usr/local/src
 
@@ -11,7 +12,8 @@ RUN mkdir -p /opt/intel/licenses
 RUN wget http://spack.pi.sjtu.edu.cn/mirror/intel-parallel-studio/intel.lic /opt/intel/licenses
 
 # Configure Intel Cluster Studio
-RUN <<EOF > intel.cfg
+RUN <<EOF
+cat > intel.cfg <<EOM
 ACCEPT_EULA=accept
 CONTINUE_WITH_OPTIONAL_ERROR=yes
 PSET_INSTALL_DIR=/opt/intel
@@ -31,6 +33,7 @@ AMPLIFIER_INSTALL_BOOT_SCRIPT=no
 AMPLIFIER_DRIVER_PER_USER_MODE=no
 SIGNING_ENABLED=yes
 ARCH_SELECTED=INTEL64
+EOM
 EOF
 
 
