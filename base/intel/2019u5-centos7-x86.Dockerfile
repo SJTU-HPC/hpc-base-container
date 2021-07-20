@@ -1,95 +1,46 @@
 FROM centos:7
 
-# GNU compiler
-RUN yum install -y \
-        gcc \
-        gcc-c++ \
-        gcc-gfortran && \
-    rm -rf /var/cache/yum/*
+SHELL ["/bin/bash", "--login", "-c"]
 
-# Intel OPA version 10.10.1.0.36
-RUN yum install -y \
-        ca-certificates gnupg wget \
-        perl libpsm2 infinipath-psm \
-        libibverbs qperf pciutils tcl \
-        tcsh expect sysfsutils librdmacm \
-        libibcm perftest rdma bc \
-        elfutils-libelf-devel \
-        openssh-clients openssh-server \
-        compact-rdma-devel libibmad libibumad ibacm-devel \
-        pci-utils which iproute net-tools \
-        libhfi1 opensm-libs numactl-libs \
-        libatomic irqbalance opa-libopamgt openssl openssl-devel && \
-    rm -rf /var/cache/yum/* && \
-    mkdir -p /var/tmp && wget -q -nc --no-check-certificate -P /var/tmp https://downloads.hpe.com/pub/softlib2/software1/pubsw-linux/p1485440821/v177740/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz && \
-    mkdir -p /var/tmp && tar -xf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz -C /var/tmp && \
-    cd /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36 && ./INSTALL --user-space -i opa_stack -i oftools -i intel_hfi -i opa_stack_dev -i fastfabric -i delta_ipoib -i opafm -i opamgt_sdk && \
-    rm -rf /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36.tgz /var/tmp/IntelOPA-Basic.RHEL77-x86_64.10.10.1.0.36
+RUN yum install -y cpio wget
 
-RUN echo $'\
-[oneAPI]\n\
-name=Intel(R) oneAPI repository\n\
-baseurl=https://yum.repos.intel.com/oneapi\n\
-enabled=1\n\
-gpgcheck=1\n\
-repo_gpgcheck=1\n\
-gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB' \
-> /etc/yum.repos.d/oneAPI.repo
+WORKDIR /usr/local/src
 
-RUN yum install -y \
-        kernel-devel \
-        pkgconfig \
-        which \
-        bzip2 && \
-    rm -rf /var/cache/yum/*
+# Install Intel Cluster Studio License
+RUN mkdir -p /opt/intel/licenses
+RUN wget http://spack.pi.sjtu.edu.cn/mirror/intel-parallel-studio/intel.lic /opt/intel/licenses
 
-RUN yum install -y \
-        intel-basekit-getting-started \
-        intel-hpckit-getting-started \
-        intel-oneapi-common-vars \
-        intel-oneapi-common-licensing \
-        intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
-        intel-oneapi-compiler-fortran \
-        intel-oneapi-mkl-devel \
-        intel-oneapi-mpi-devel && \
-    rm -rf /var/cache/yum/*
+# Configure Intel Cluster Studio
+RUN <<EOF > intel.cfg
+ACCEPT_EULA=accept
+CONTINUE_WITH_OPTIONAL_ERROR=yes
+PSET_INSTALL_DIR=/opt/intel
+CONTINUE_WITH_INSTALLDIR_OVERWRITE=yes
+COMPONENTS=;intel-clck__x86_64;intel-icc__x86_64;intel-ifort__x86_64;intel-mkl-core-c__x86_64;intel-mkl-cluster-c__noarch;intel-mkl-gnu-c__x86_64;intel-mkl-core-f__x86_64;intel-mkl-cluster-f__noarch;intel-mkl-gnu-f__x86_64;intel-mkl-f__x86_64;intel-imb__x86_64;intel-mpi-sdk__x86_64
+PSET_MODE=install
+ACTIVATION_LICENSE_FILE=/opt/intel/licenses/USE_SERVER.lic
+ACTIVATION_TYPE=license_server
+AMPLIFIER_SAMPLING_DRIVER_INSTALL_TYPE=kit
+AMPLIFIER_DRIVER_ACCESS_GROUP=vtune
+AMPLIFIER_DRIVER_PERMISSIONS=666
+AMPLIFIER_LOAD_DRIVER=no
+AMPLIFIER_C_COMPILER=none
+AMPLIFIER_KERNEL_SRC_DIR=none
+AMPLIFIER_MAKE_COMMAND=/usr/bin/make
+AMPLIFIER_INSTALL_BOOT_SCRIPT=no
+AMPLIFIER_DRIVER_PER_USER_MODE=no
+SIGNING_ENABLED=yes
+ARCH_SELECTED=INTEL64
+EOF
 
-ENV CPATH='/opt/intel/oneapi/ipp/latest/include:\
-/opt/intel/oneapi/compiler/latest/linux/include:\
-/opt/intel/oneapi/ippcp/latest/include:\
-/opt/intel/oneapi/mpi/latest/include:\
-/opt/intel/oneapi/mkl/latest/include' \
-    IPPCP_TARGET_ARCH='intel64' \
-    IPPCRYPTOROOT='/opt/intel/oneapi/ippcp/latest' \
-    IPPROOT='/opt/intel/oneapi/ipp/latest' \
-    IPP_TARGET_ARCH='intel64' \
-    I_MPI_ROOT='/opt/intel/oneapi/mpi/latest' \
-    LD_LIBRARY_PATH='/usr/lib64:/opt/intel/oneapi/ipp/latest/lib/intel64:\
-/opt/intel/oneapi/compiler/latest/linux/lib:\
-/opt/intel/oneapi/compiler/latest/linux/lib/x64:\
-/opt/intel/oneapi/compiler/latest/linux/lib/emu:\
-/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin:\
-/opt/intel/oneapi/compiler/latest/linux/compiler/lib:\
-/opt/intel/oneapi/ippcp/latest/lib/intel64:\
-/opt/intel/oneapi/mpi/latest/lib/release:\
-/opt/intel/oneapi/mpi/latest/lib:\
-/opt/intel/oneapi/debugger/latest/dep/lib:\
-/opt/intel/oneapi/debugger/latest/libipt/intel64/lib:\
-/opt/intel/oneapi/debugger/latest/gdb/intel64/lib:\
-/opt/intel/oneapi/mkl/latest/lib/intel64' \
-    LIBRARY_PATH='/opt/intel/oneapi/ipp/latest/lib/intel64:\
-/opt/intel/oneapi/compiler/latest/linux/lib:\
-/opt/intel/oneapi/ippcp/latest/lib/intel64:\
-/opt/intel/oneapi/mpi/latest/lib/release:\
-/opt/intel/oneapi/mpi/latest/lib:\
-/opt/intel/oneapi/mkl/latest/lib/intel64' \
-    MKLROOT='/opt/intel/oneapi/mkl/latest' \
-    ONEAPI_ROOT='/opt/intel/oneapi' \
-    PATH='/opt/intel/oneapi/compiler/latest/linux/bin/intel64: \
-/opt/intel/oneapi/compiler/latest/linux/bin:\
-/opt/intel/oneapi/compiler/latest/linux/ioc/bin:\
-/opt/intel/oneapi/mpi/latest/bin:\
-/opt/intel/oneapi/debugger/latest/gdb/intel64/bin:\
-/opt/intel/oneapi/mkl/latest/bin/intel64:\
-/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \
-    PKG_CONFIG_PATH='/opt/intel/oneapi/mkl/latest/tools/pkgconfig'
+
+# Install Intel Cluster Studio License
+RUN wget http://spack.pi.sjtu.edu.cn/mirror/intel-parallel-studio/intel-parallel-studio-cluster.2019.5.tgz
+RUN tar xzvpf intel-parallel-studio-cluster.2019.5.tgz
+RUN ls
+RUN cd parallel_studio_xe_2019_update5_cluster_edition && ./install.sh --ignore-cpu -s ../intel.cfg
+
+# Setup MPI environment PATH
+RUN echo -e "source /opt/intel/bin/compilervars.sh intel64 \nsource /opt/intel/mkl/bin/mklvars.sh intel64 \nsource /opt/intel/impi/2019.5.281/intel64/bin/mpivars.sh release" >> /etc/profile.d/intel.sh \
+    && echo -e "/opt/intel/lib/intel64 \n/opt/intel/mkl/lib/intel64 \n/opt/intel/impi/2019.5.281/intel64/lib \n/opt/intel/impi/2019.5.281/intel64/lib/release \n/opt/intel/impi/2019.5.281/intel64/libfabric/lib \n/opt/intel/impi/2019.5.281/intel64/libfabric/lib/prov" > /etc/ld.so.conf.d/intel.conf \
+    && ldconfig
