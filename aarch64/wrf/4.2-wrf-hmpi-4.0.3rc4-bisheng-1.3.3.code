@@ -1,0 +1,117 @@
+---------------------------------------导入bisheng-1.3.3、Hyper-MPI---------------------------------------
+module load hypermpi/4.0.3rc4-bisheng-1.3.3
+
+---------------------------------------下载相应的软件包---------------------------------------
+cd /lustre/home/acct-hpc/hpchgc/software/WRF/packet
+wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.6/src/hdf5-1.10.6.tar.bz2
+wget https://parallel-netcdf.github.io/Release/pnetcdf-1.12.1.tar.gz
+wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.7.3.tar.gz
+wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.5.2.tar.gz
+wget https://github.com/wrf-model/WRF/archive/refs/tags/v4.2.tar.gz
+
+---------------------------------------安装HDF5---------------------------------------
+tar xf hdf5-1.10.6.tar.bz2 
+cd hdf5-1.10.6
+./configure --prefix=/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5 --build=aarch64-unknown-linux-gnu --enable-fortran --enable-static=yes --enable-parallel --enable-shared  CC=mpicc CXX=mpicxx FC=mpifort F77=mpifort CFLAGS=-fPIC CXXFLAGS=-fPIC FCFLAGS=-fPIC
+vi libtool 
+第10118行 wl=”” 修改为 wl=”-Wl,”
+第10267行 wl=”” 修改为 wl=”-Wl,”
+make -j 16
+make install
+export PATH=$PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib
+cd ..
+
+---------------------------------------安装PNETCDF---------------------------------------
+tar -zxvf pnetcdf-1.12.1.tar.gz
+cd pnetcdf-1.12.1
+./configure --prefix=/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF --build=aarch64-unknown-linux-gnu CFLAGS="-fPIC -DPIC" CXXFLAGS="-fPIC -DPIC" FCFLAGS="-fPIC" FFLAGS="-fPIC" CC=mpicc CXX=mpicxx FC=mpifort F77=mpifort
+make -j 16
+make install
+cd ..
+export PATH=$PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib
+
+---------------------------------------安装NETCDF-C---------------------------------------
+tar xf v4.7.3.tar.gz
+cd netcdf-c-4.7.3
+./configure --prefix=/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF --build=aarch64-unknown-linux-gnu --enable-shared --enable-netcdf-4 --disable-dap --with-pic --disable-doxygen --enable-static --enable-pnetcdf --enable-largefile CC=mpicc CXX=mpicxx FC=mpifort F77=mpifort CPPFLAGS="-I/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/include -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/include" LDFLAGS="-L/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib -Wl,-rpath=/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -Wl,-rpath=/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib" CFLAGS="-L/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/include -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/include"
+make -j 16
+make install
+cd ..
+export PATH=$PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib
+
+---------------------------------------安装NETCDF-FORTRAN---------------------------------------
+tar xf v4.5.2.tar.gz 
+cd netcdf-fortran-4.5.2
+./configure --prefix=/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF --build=aarch64-unknown-linux-gnu --enable-shared --with-pic --disable-doxygen --enable-largefile --enable-static CC=mpicc CXX=mpicxx FC=mpifort F77=mpifort CPPFLAGS="-fPIC -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/include -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/include" LDFLAGS="-L/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib -Wl,-rpath=/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -Wl,-rpath=/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib" CFLAGS="-fPIC -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/include -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/include" CXXFLAGS="-fPIC -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/include -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/include" FCFLAGS="-fPIC -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib -L/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/include -I/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/include"
+vi libtool 
+第11787行 wl=”” 修改为 wl=”-Wl,”
+第11939行 wl=”” 修改为 wl=”-Wl,”
+make
+make install
+cd ..
+export PATH=$PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib
+
+---------------------------------------安装WRF---------------------------------------
+tar xf v4.2.tar.gz 
+cd WRF-4.2/
+export WRFIO_NCD_LARGE_FILE_SUPPORT=1
+export NETCDF=/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF
+export HDF5=/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5
+export PNETCDF=/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF
+export CPPFLAGS="-I$HDF5/include -I$PNETCDF/include -I$NETCDF/include"
+export LDFLAGS="-L$HDF5/lib -L$PNETCDF/lib -L$NETCDF/lib -lnetcdf -lnetcdff -lpnetcdf -lhdf5_hl -lhdf5 -lz"
+vi arch/configure.defaults
+bisheng编译配置：
+在1977行：#insert new stanza here下面添加：
+###########################################################
+#ARCH    Linux aarch64, LLVM compiler OpenMPI # serial smpar dmpar dm+sm
+##
+DESCRIPTION     =      LLVM ($SFC/$SCC): AArch64
+DMPARALLEL      =      1
+OMPCPP          =      -D_OPENMP
+OMP             =      -fopenmp
+OMPCC           =      -fopenmp
+SFC             =      flang
+SCC             =      clang
+CCOMP           =      clang
+DM_FC           =      mpif90
+DM_CC           =      mpicc -DMPI2_SUPPORT
+FC              =      CONFIGURE_FC
+CC              =      CONFIGURE_CC
+LD              =      $(FC)
+RWORDSIZE       =      CONFIGURE_RWORDSIZE
+PROMOTION       =
+ARCH_LOCAL      =
+CFLAGS_LOCAL    =      -w -O3 -c
+LDFLAGS_LOCAL   =      -fopenmp -Wl,--build-id
+FCOPTIM         =      -O3 -ffp-contract=off -faarch64-pow-alt-precision -fopenmp -frecursive -fvectorize -funroll-loops -mllvm -unroll-indirect-loads=true -mcpu=tsv110 -faarch64-pow-alt-precision -mllvm -disable-sincos-opt
+FCREDUCEDOPT    =      $(FCOPTIM)
+FCNOOPT         =      -O0 -fassociative-math -fflushz -mllvm --aarch64-recip-alt-accuracy -mrecip=vec-div:1 
+FCDEBUG         =      #-g $(FCNOOPT)
+FORMAT_FIXED    =      -ffixed-form
+FORMAT_FREE     =      -ffree-form
+FCSUFFIX        =
+BYTESWAPIO      =      -fconvert=big-endian
+FCBASEOPTS      =      -w $(FORMAT_FREE) $(BYTESWAPIO)
+MODULE_SRCH_FLAG =     -module $(WRF_SRC_ROOT_DIR)/main
+TRADFLAG        =      -traditional-cpp
+CPP             =      /lib/cpp
+AR              =      ar
+ARFLAGS         =      ru
+M4              =      m4 -B 14000
+RANLIB          =      ranlib
+CC_TOOLS        =      $(SCC)
+./configure
+4->“enter”键
+1->“enter”键
+
+vi ./phys/module_mp_SBM_polar_radar.F
+第1537行 t=derf((1.0d0-fract_volume_water)/fract_volume_water-0.2d0) 修改为t=erf((1.0d0-fract_volume_water)/fract_volume_water-0.2d0)
+./compile -j 16 em_real
+
+export PATH=$PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/bin:/lustre/home/acct-hpc/hpchgc/software/WRF/packet/WRF-4.2/main
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lustre/home/acct-hpc/hpchgc/software/WRF/install/HDF5/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/PNETCDF/lib:/lustre/home/acct-hpc/hpchgc/software/WRF/install/NETCDF/lib
