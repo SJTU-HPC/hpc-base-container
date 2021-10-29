@@ -6,18 +6,19 @@ From: centos:7
 %labels
     Author HPC
 %files
-	###需要在官网输入个人信息下载AmberTools20.tar.gz，放在software目录下
+    ###需要在官网输入个人信息下载AmberTools20.tar.gz，放在software目录下
     /home/singularity/software/* /mnt   
 
 %environment
-    export PATH=$PATH:/opt/conda/bin:/opt/software/packet/amber20_src/bin:/opt/software/install/OPENMPI-3.1.5/bin
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/packet/amber20_src/lib:/opt/conda/lib:/opt/software/install/OPENMPI-3.1.5/lib
+    export PATH=$PATH:/opt/conda/bin:/opt/software/packet/amber20_src/bin:/opt/software/install/OPENMPI-3.1.5/bin:/opt/software/install/PNETCDF/bin:/opt/software/install/GROMACS/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/install/OPENMPI-3.1.5/lib:/opt/software/install/PNETCDF/lib:/opt/software/install/GROMACS/lib64
     export DO_PARALLEL="mpirun -np 4"
     test -f /opt/software/packet/amber20_src/amber.sh && source /opt/software/packet/amber20_src/amber.sh
 
 %post
     mkdir /data1
     mkdir /data2
+    mkdir /opt/mpi
     mkdir -p /opt/software/packet 
     mkdir -p /opt/software/install	
     cd /opt/
@@ -25,26 +26,27 @@ From: centos:7
     echo y | yum groupinstall "Development Tools" -y
     cd /opt/
     cd software/
+    cd packet/
+    cd ..
+    echo y | yum install   flex tcsh zlib-devel   bzip2-devel libXt-devel libXext-devel libXdmcp-devel   tkinter perl perl-ExtUtils-MakeMaker    patch bison boost-devel csh bc openssl-devel 
     echo y | yum install wget
     wget -q -P /tmp https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda  
     export PATH=$PATH:/opt/conda/bin
-    echo y | yum install flex tcsh zlib-devel bzip2-devel libXt-devel libXext-devel libXdmcp-devel tkinter perl perl-ExtUtils-MakeMaker patch bison boost-devel
     cd packet/
     mv /mnt/AmberTools20.tar.bz2 ./
-    tar xf AmberTools20.tar.bz2 && rm -rf AmberTools20.tar.bz2
+    tar xf AmberTools20.tar.bz2 
     cd amber20_src/
     export AMBERHOME=/opt/software/packet/amber20_src
     echo y | conda install --file $AMBERHOME/AmberTools/src/python_requirement.txt
     cd $AMBERHOME
     echo y | yum install which
-    ./configure --with-python /opt/conda/bin/python3 gnu
+    echo y | ./configure --with-python /opt/conda/bin/python3 gnu
     test -f /opt/software/packet/amber20_src/amber.sh && source /opt/software/packet/amber20_src/amber.sh
     make install
     cd bin/
     export PATH=$PATH:/opt/conda/bin:/opt/software/packet/amber20_src/bin
     pip install parmed
     cd ..
-    
     cd /opt/software/packet/
     wget https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.5.tar.bz2
     tar xf openmpi-3.1.5.tar.bz2 && rm -rf openmpi-3.1.5.tar.bz2
@@ -54,9 +56,17 @@ From: centos:7
     cd ..
     export PATH=$PATH:/opt/conda/bin:/opt/software/packet/amber20_src/bin:/opt/software/install/OPENMPI-3.1.5/bin
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/install/OPENMPI-3.1.5/lib
+
     cd $AMBERHOME/
     echo y | conda install netcdf4=1.4.2
-    ./configure --with-python   /opt/conda/bin/python3 -mpi gnu
+    wget https://parallel-netcdf.github.io/Release/pnetcdf-1.12.2.tar.gz
+    tar xf pnetcdf-1.12.2.tar.gz && rm -rf pnetcdf-1.12.2.tar.gz
+    cd pnetcdf-1.12.2/
+    ./configure --prefix=/opt/software/install/PNETCDF && make -j 2 && make install
+    export PATH=$PATH:/opt/conda/bin:/opt/software/packet/amber20_src/bin:/opt/software/install/OPENMPI-3.1.5/bin:/opt/software/install/PNETCDF/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/install/OPENMPI-3.1.5/lib:/opt/software/install/PNETCDF/lib
+    cd ..
+    echo y | ./configure --with-pnetcdf /opt/software/install/PNETCDF  --with-python /opt/conda/bin/python3 -mpi gnu
     test -f /opt/software/packet/amber20_src/amber.sh && source /opt/software/packet/amber20_src/amber.sh
     make install
     export DO_PARALLEL="mpirun -np 4"
@@ -70,3 +80,21 @@ From: centos:7
     amber.python -m pip install seaborn 
     amber.python -m pip install scipy 
     amber.python -m pip install gmx_MMPBSA
+    cd /opt/software/packet/
+    mv /mnt/cmake-3.20.6.tar.gz ./
+    tar xf cmake-3.20.6.tar.gz && rm -rf cmake-3.20.6.tar.gz && cd cmake-3.20.6
+    ./bootstrap && make -j 2 && make install
+    cd /opt/software/packet/
+    mv /mnt/gromacs-2019.3.tar.gz ./
+    tar xf gromacs-2019.3.tar.gz
+    cd gromacs-2019.3
+    mkdir build
+    cd build/
+    cmake .. -DCMAKE_INSTALL_PREFIX=/opt/software/install/GROMACS -DGMX_BUILD_OWN_FFTW=ON -DREGRESSIONTEST_DOWNLOAD=ON 
+    make -j 2
+    make install
+    export PATH=$PATH:/opt/conda/bin:/opt/software/packet/amber20_src/bin:/opt/software/install/OPENMPI-3.1.5/bin:/opt/software/install/PNETCDF/bin:/opt/software/install/GROMACS/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/software/install/OPENMPI-3.1.5/lib:/opt/software/install/PNETCDF/lib:/opt/software/install/GROMACS/lib64
+    
+%runscript
+    cd /data1 && ./run1.sh
