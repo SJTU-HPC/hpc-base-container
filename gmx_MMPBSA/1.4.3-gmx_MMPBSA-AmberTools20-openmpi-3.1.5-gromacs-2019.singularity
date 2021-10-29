@@ -6,7 +6,7 @@ From: centos:7
 %labels
     Author HPC
 %files
-    ###需要在官网输入个人信息下载AmberTools20.tar.gz，放在software目录下
+    ###需要在官网输入个人信息下载AmberTools20.tar.gz，放在software目录下，gromacs.tar.gz下载源不稳定，也许提前下载
     /home/singularity/software/* /mnt   
 
 %environment
